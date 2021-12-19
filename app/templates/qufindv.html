@@ -1,0 +1,159 @@
+{% extends 'layout.html' %}
+{% block title %} 
+    QUFIND - Prokaryotes
+{% endblock %}
+
+{% block body %}
+    <div class="container qufindCommon qufindvPage">
+        <div class="loadingWheelDiv">
+            <div class="loadingWheel">
+                <img src="{{ url_for('static', filename='images/spinner.gif')}}" alt="Loading Wheel">
+            </div>
+        </div>
+        <div class="mainContainer">
+            <h2>QUFINDV</h2>
+            <form id="form_qufindv" action="{{ request.script_root }}/submitv" method="post" enctype="multipart/form-data">
+                <div class="gapclass">
+                    &nbsp;&nbsp;<sup style="color: red;">*</sup>&nbsp;This module is used for comparing two viral sequences.
+                </div>
+                <div class="sequencematch_div grayContainerBox">
+                    <div class="floatLeft sequence_1_outer_div textarea_fileupload_div grayContainerBox">
+                        <div class="textarea_div">
+                            <div class="textareatop_div">
+                                <label>Enter 1<sup>st</sup> Sequence in fasta format</label>
+                            </div>
+                            <div class="textarea_label_clear_div">
+                                <a href="#" onclick="loadExampleQufindv('1');return false;">Auto-fill with Example</a>
+                                <a href="#" onclick="document.getElementById('fasta_seq_textarea_1').value='';event.preventDefault();document.getElementById('fasta_seq_textarea_1').focus();">Clear Input</a>
+                            </div>
+                            <textarea name="fasta_seq_textarea_1" id="fasta_seq_textarea_1" cols="30" rows="30"></textarea>
+                        </div>
+                        <div class="gapclass" style="text-align: center;">OR</div> 
+                        <div class="upload_file_div grayContainerBox gapclass">
+                            <input type="file" name="fasta_seq_file_1" />
+                        </div>
+                    </div>
+                    <div class="floatRight sequence_2_outer_div textarea_fileupload_div grayContainerBox">
+                        <div class="textarea_div">
+                            <div class="textareatop_div">
+                                <label>Enter 2<sup>nd</sup> Sequence in fasta format</label>
+                            </div>
+                            <div class="textarea_label_clear_div">
+                                <a href="#" onclick="loadExampleQufindv('2');return false;">Auto-fill with Example</a>
+                                <a href="#" onclick="document.getElementById('fasta_seq_textarea_2').value='';event.preventDefault();document.getElementById('fasta_seq_textarea_2').focus();">Clear Input</a>
+                            </div>
+                            <textarea name="fasta_seq_textarea_2" id="fasta_seq_textarea_2" cols="30" rows="30"></textarea>
+                        </div>
+                        <div class="gapclass" style="text-align: center;">OR</div> 
+                        <div class="upload_file_div grayContainerBox gapclass">
+                            <input type="file" name="fasta_seq_file_2" />
+                        </div>
+                    </div>
+                    <div class="clearFloat"></div>
+                    <div class="note_box_div">
+                        Note: <div>1. Paste single sequence at a time in each box.
+                                    <br/>
+                                    2. Sequence should be aligned and trimmed first. Then, paste/upload in each box.
+                              </div>
+                    </div>
+                </div>
+
+                <div class="topContainer">
+                    <div class="gapclass containerDiv">
+                        <div class="gapclass bottomDataContainer grayContainerBox">
+                            <div class="gapclass radio_button_div grayContainerBox">
+                                <label>Choose model for motif search: &nbsp;&nbsp;</label>
+                                <div class="radioLeft">
+                                    <input checked type="radio" name="model_type" id="model_type_non" value="nonoverlapping">
+                                    <label sel class="radio_checkbox_label" for="model_type_non">Non-Overlapping model</label>
+                                </div>
+                                <div class="radioRight">
+                                    <input type="radio" name="model_type" id="model_type" value="overlapping">
+                                    <label class="radio_checkbox_label" for="model_type">Overlapping model</label>
+                                </div>
+                            </div>
+                            <div class="gapclass motif_parameters_div grayContainerBox">
+                                <h3>Configure Quadreplexes or Motif parameters:</h3>
+                                <div>
+                                    <div class="select_box_label_div select_box_div floatLeft">
+                                        <label>Nucleobase to search:</label>
+                                        <select name="nucleobase">
+                                            <option value="G" selected>G</option>
+                                            <option value="C">C</option>
+                                            <option value="A">A</option>
+                                            <option value="T">T</option>
+                                        </select>
+                                    </div>
+                                    <div class="select_box_label_div select_box_div floatLeft">
+                                        <label>Min. Stem size:</label>
+                                        <select name="min_stem_size">
+                                            {%for ele in range(2, 4)%}
+                                                <option {%if ele == 2%}selected{%endif%} value="{{ele}}">{{ele}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </div>
+                                    <div class="select_box_label_div select_box_div floatLeft">
+                                        <label>Max. Stem size:</label>
+                                        <select name="max_stem_size">
+                                            {%for ele in range(4, 6)%}
+                                                <option {%if ele == 4%}selected{%endif%} value="{{ele}}">{{ele}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </div>
+                                    <div class="select_box_label_div select_box_div floatLeft">
+                                        <label>Min. loop length</label>
+                                        <select name="min_loop_length">
+                                            {%for ele in range(1, 11)%}
+                                                <option {%if ele == 1%}selected{%endif%} value="{{ele}}">{{ele}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </div>
+                                    <div class="select_box_label_div select_box_div floatLeft">
+                                        <label>Max. loop length</label>
+                                        <select name="max_loop_length">
+                                            {%for ele in range(5, 31)%}
+                                                {% set default_selected = 7%}
+                                                <option {%if ele == default_selected%}selected{%endif%} value="{{ele}}">{{ele}}</option>
+                                            {%endfor%}
+                                        </select>
+                                    </div>
+                                    <div class="clearFloat"></div>
+                                </div>
+                            </div>
+                            <div class="gapclass bulge_mismatch_div grayContainerBox">
+                                <h3>Do you want to search for atypical motifs?</h3>
+                                <div>
+                                    <div class="select_box_label_div select_box_div floatLeft">
+                                        <div style="text-align: left;">
+                                            <label>Bulges:</label>
+                                            <select class="bulge_mismatch_select" name="bulges" id="bulges_select">
+                                                {%for ele in range(0, 6)%}
+                                                    <option {%if ele == 0%}selected{%endif%} value="{{ele}}">{{ele}}</option>
+                                                {%endfor%}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="select_box_label_div select_box_div floatRight">
+                                        <div style="text-align: right;">
+                                            <label>Mismatches: </label>
+                                            <select class="bulge_mismatch_select" name="mismatches" id="mismatches_select">
+                                                {%for ele in range(0, 3)%}
+                                                    <option {%if ele == 0%}selected{%endif%} value="{{ele}}">{{ele}}</option>
+                                                {%endfor%}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="clearFloat"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="gapclass submit_button_div">
+                            <button class="gray_button" type="button" id="qufindv_submit_button">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
