@@ -1,0 +1,157 @@
+{% extends 'layout.html' %}
+{% block title %} 
+    QUFIND - Result
+{% endblock %}
+
+{% block body %}
+    <div class="container resultPage">
+        <div class="gapclass bookmark_inputDownload_div">
+            <div class="bookmark_div">
+                !!! Bookmark or Save this Page for future use !!!
+            </div>
+            {% if foldername %}
+                <form action="{{request.script_root }}/downloadFile" method="post">
+                    <div class="download_div output_file_div">
+                        <input type="hidden" name="foldername" value="{{ foldername }}">
+                        <button class="shadow_gray_button download_result">
+                            Download Combined Result
+                        </button>
+                    </div>
+                </form>
+            {% endif %}
+            <div class="gapclass link_div">                
+                <input type="text" value="{{ request.url }}" readonly id="copyLinkText" />
+                <div class="tooltip">
+                    <button class="shadow_gray_button" onclick="myFunction();" onmouseout="copyLinkOutFunc();">
+                        <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                        Copy Link
+                    </button>
+                </div>
+            </div>
+            <div class="gapclass data_delete_div">
+                Warning : Data gets deleted automatically after 1 day!!!
+            </div>            
+        </div>
+        <div class="gapclass header_search_div">
+            Result
+        </div>
+        <div class="accordion_outer_div">
+            {%for o_key, o_value in folder_data_dict.items()%}
+                <div class="gapclass accordion_div {% if loop.index == 1 %} selected{%endif%}">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span>{{loop.index}}.</span>
+                                    <span>{{o_key}}</span>
+                                </td>
+                                {%if o_value == 'processing'%}
+                                    <td class="pending">
+                                        Processing..
+                                    </td>
+                                {%else%}
+                                    <td>
+                                        <svg class="down-arrow">
+                                            <polygon points="0,0 6,8 12,0" />
+                                        </svg>
+                                    </td>
+                                {%endif%}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="gapclass resultContainer">
+                    <div class="loadingWheelDiv">
+                        <div class="loadingWheel">
+                            <img src="{{ url_for('static', filename='images/spinner.gif')}}" alt="Loading Wheel">
+                        </div>
+                    </div>
+                    <div class="inner_accordion_container_div">
+                        {%if 'png_data' in o_value %}
+                            {% set png_data = o_value['png_data'] %}
+                            {% set _dummy = o_value.pop('png_data') %}
+                        {%endif%}
+                        {%if png_data%}
+                            <div class="plot_photo_div">
+                                <button class="gray_button showPlot_button" type="button">Show Plot</button>
+                                <div class="plot_div">
+                                    <img class="gapclass plot_img" src="{{ png_data }}" alt="{{o_key}}"/>
+                                </div>
+                            </div>
+                        {%endif%}
+                        {%for i_key, i_value in o_value.items()%}
+                            <div class="gapclass inner_accordion_div accordion_div {% if loop.index == 1 %} selected{%endif%}">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span>{{loop.index}}.</span>
+                                                <span>{{i_key|tableHeader}}</span>
+                                            </td>
+                                            <td>
+                                                <svg class="down-arrow">
+                                                    <polygon points="0,0 6,8 12,0" />
+                                                </svg>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="gapclass resultContainer">
+                                <div class="accordion_download_div">
+                                    <form action="{{ request.script_root }}/downloadFile" method="post">
+                                        <input type="hidden" name="foldername" value="{{foldername + '#' + o_key + '#' + i_key}}">
+                                        <button class="gray_button">Download Result</button>
+                                    </form>
+                                </div>
+                                <div class="table_dull_div {%if i_value|length > 11%} show_dull {%endif%}">
+                                    <div class="table_outer_div">
+                                        <table class="gapclass inner_table_result">
+                                            <thead>
+                                                <tr>
+                                                    {%for ele in i_value[0]%}
+                                                        <th>
+                                                            {{ele}}
+                                                        </th>
+                                                    {%endfor%}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {%for ele in i_value[1:]%}
+                                                    <tr>
+                                                        {%for i_ele in ele%}
+                                                            <td>
+                                                                {%if loop.index0 == 0 and ((i_key == 'positive_cpg' and 'positive_cpg' in o_value and 'positive_motif' in o_value) or (i_key == 'negative_cpg' and 'negative_cpg' in o_value and 'negative_motif' in o_value)) %}
+                                                                    {%if 'positive' in i_key%}
+                                                                        {%set strand_type = 'positive'%}
+                                                                    {%else%}
+                                                                        {%set strand_type = 'negative'%}
+                                                                    {%endif%}
+                                                                    {%set positions = i_ele|replace('-', '#')%}
+                                                                    <a href="#" onclick="generateCPGPlot('{{foldername}}#{{strand_type}}#{{o_key}}#{{positions}}', this); event.preventDefault();">
+                                                                        {{i_ele}}
+                                                                    </a>
+                                                                {%else%}
+                                                                    {{i_ele}}
+                                                                {%endif%}
+                                                            </td>
+                                                        {%endfor%}
+                                                    </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="dull_div {%if i_value|length > 11 %} show_dull {%endif%}">
+                                        ++ More..
+                                    </div>
+                                </div>
+                            </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            {%endfor%}
+        </div>
+        <div class="gapclass"></div>
+    </div>
+    <img src="" alt="" id="ajaxresponse" style="width: 100%;">
+{% endblock %}

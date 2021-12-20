@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+{% block title %} 
+    QUFIND - Help
+{% endblock %}
+{% block body %}
+    <div class="container helpPage">
+        <div class="gapclass mainContainer">
+            <b>The web server is divided into three modules:</b>
+            <p class="tool_header_p">
+                QUFINDU
+            </p>
+            <div class="gapclass">
+                This module allows users to mine G4 or non-G4 motifs in all species available in the two databases, ENSEMBL and NCBI.
+                (<a href="{{ request.script_root }}/loadDownloadFile/highthroughput_1000_positive_Dataset">High-Throughput Positive Dataset</a>,<a href="{{ request.script_root }}/loadDownloadFile/verified_339_positive_dataset">Verified Positive Dataset</a>)
+            </div>
+            <div class="gapclass data_list_div">
+                Steps to use this module:
+                <ol>
+                    <li>
+                        Select the database from Ensembl or NCBI.
+                    </li>
+                    <li>Enter a single or multiple Ensemble ID (s) for which you want to mine quadruplexes on selection of Ensembl database or Enter a NCBI accession ID for which you want to mine quadruplexes on selection of NCBI database.</li>
+                    <li>Choose Yes if you want to mine quadruplexes in context with CpG islands (CGI) and then choose the model of searching algorithm for CGI (non-overlapping or overlapping). By default, CGI is not selected.</li>
+                    <li>Then, choose the model of searching algorithm for quadruplexes (non-overlapping or overlapping). Non-overlapping model is selected by default.</li>
+                    <li>Configure the motif parameters according to your need. Detailed description of motif parameters is given below:
+                        <ul>
+                            <li>
+                                Nucleobase to search: Letter that is used to detect the G-tetrads/ G-stems. G is used by default but user can also select A, T or C.
+                            </li>
+                            <li>
+                                Minimum and maximum stem size: The minimum and maximum length of the G-tetrads. By default, 2 is selected as minimum and 4 is selected as maximum stem size.
+                            </li>
+                            <li>
+                                Minimum and Maximum loop length: This parameter defines the maximum distance (loop distance) that is allowed between two consecutive tetrads within the same quadruplexes. By default, minimum loop length is 1 and maximum loop length is 7.
+                            </li>
+                            <li>
+                                Strand selection: Select the strand (positive/ negative/ both) in which you want to search quadruplexes. Positive strand is selected by default.
+                            </li>
+                            <li>
+                                If you want to search for atypical quadruplexes (other than quadruplexes containing standard parameters) then select the number of bulges or number of mismatches that you want to incorporate into a tetrad. Bulges and mismatches cannot occur simultaneously.
+                            </li>
+                            <li>
+                                Click on the submit button. 
+                            </li>
+                            <li>
+                                On submission you can view the results in the form of a stem plot or you can download the file as well. Users can bookmark the output page to view the results after sometime.
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+            <p class="gapclass tool_header_p">
+                QUFINDV
+            </p>
+            <div class="gapclass">
+                This module allows users to compare two viral sequences on the basis of unique quadruplexes. Users need to align the two query sequences first (e.g. using Clustal W) and then trim the overhangs found in the respective sequence. 
+            </div>
+            <div class="gapclass data_list_div">
+                Steps to use this module:
+                <ol>
+                    <li>
+                        Paste the first query sequence in text box placed at left and second query sequence in text box placed at right.
+                    </li>
+                    <li>Choose the model of searching algorithm for quadruplexes (non-overlapping or overlapping).</li>
+                    <li>Configure the motif parameters as given above and click on submit button.</li>
+                </ol>
+            </div>
+            <p class="gapclass tool_header_p">
+                QUFIND
+            </p>
+            <div class="gapclass">
+                This module allows users to mine G4 or non-G4 motifs in custom sequences. User can directly paste sequence (s) or upload a file containing sequences.
+                (<a href="{{ request.script_root }}/loadDownloadFile/highthroughput_1000_positive_Dataset">High-Throughput Positive Dataset</a>,<a href="{{ request.script_root }}/loadDownloadFile/verified_339_positive_dataset">Verified Positive Dataset</a>)
+            </div>
+            <div class="gapclass data_list_div">
+                Steps to use this module:
+                <ol>
+                    <li>
+                        Choose Yes if you want to mine quadruplexes in context with CpG islands (CGI) and then choose the model of searching algorithm for CGI (non-overlapping or overlapping). By default, CGI is not selected.
+                    </li>
+                    <li>Then, choose the model of searching algorithm for quadruplexes (non-overlapping or overlapping). Non-overlapping model is selected by default.</li>
+                    <li>Configure the motif parameters as given above and click on submit button.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+{% endblock %}

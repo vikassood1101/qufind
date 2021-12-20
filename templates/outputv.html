@@ -1,0 +1,132 @@
+{% extends 'layout.html' %}
+{% block title %} 
+    QUFIND - Result(Qufindv)
+{% endblock %}
+
+{% block body %}
+    <div class="container resultPage resultPageV">
+        <div class="gapclass bookmark_inputDownload_div">
+            <div class="bookmark_div">
+                !!! Bookmark or Save this Page for future use !!!
+            </div>
+            <div class="gapclass link_div">                
+                <input type="text" value="{{ request.url }}" readonly id="copyLinkText" />
+                <div class="tooltip">
+                    <button class="shadow_gray_button" onclick="myFunction();" onmouseout="copyLinkOutFunc();">
+                        <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                        Copy Link
+                    </button>
+                </div>
+            </div>
+            <div class="gapclass data_delete_div">
+                Warning : Data gets deleted automatically after 1 day!!!
+            </div>            
+        </div>
+        <div class="gapclass header_search_div">
+            Result
+        </div>
+        <div class="gapclass plot_image_div">
+            {%if plot_image%}
+                <img src="{{plot_image}}" alt="Data Plot" title="Data Plot">
+            {%else%}
+                <div class="no_plot_div">
+                    <div class="noPlotInnerDiv">
+                        No quadruplexes were found.!!
+                    </div>
+                </div>
+            {%endif%}
+        </div>
+        <div class="accordion_outer_div">
+            {%for o_key, o_value in folder_data_dict.items()%}
+                <div class="gapclass accordion_div {% if loop.index == 1 %} selected{%endif%}">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span>{{loop.index}}.</span>
+                                    <span>{{o_key|tableHeader}}</span>
+                                </td>
+                                {%if o_value == 'processing'%}
+                                    <td class="pending">
+                                        Processing..
+                                    </td>
+                                {%else%}
+                                    <td>
+                                        <svg class="down-arrow">
+                                            <polygon points="0,0 6,8 12,0" />
+                                        </svg>
+                                    </td>
+                                {%endif%}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="gapclass resultContainer">
+                    <div class="inner_accordion_container_div">
+                        {%for i_key, i_value in o_value.items()%}
+                            <div class="gapclass inner_accordion_div accordion_div {% if loop.index == 1 %} selected{%endif%}">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span>{{loop.index}}.</span>
+                                                <span>{{i_key}}</span>
+                                            </td>
+                                            <td>
+                                                <svg class="down-arrow">
+                                                    <polygon points="0,0 6,8 12,0" />
+                                                </svg>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="gapclass resultContainer">
+                                <div class="accordion_download_div">
+                                    <form action="{{ request.script_root }}/downloadFile" method="post">
+                                        {%if o_key == 'unique_quadruplexes'%}
+                                            <input type="hidden" name="foldername" value="{{foldername + '#' + i_key + '#' + i_key + '_unique_data'}}">
+                                        {%else%}
+                                            <input type="hidden" name="foldername" value="{{foldername + '#' + i_key + '#' + i_key + '_common_data'}}">
+                                        {%endif%}
+                                        <button class="gray_button">Download Result</button>
+                                    </form>
+                                </div>
+                                <div class="table_dull_div {%if i_value|length > 11%} show_dull {%endif%}">
+                                    <div class="table_outer_div">
+                                        <table class="gapclass inner_table_result">
+                                            <thead>
+                                                <tr>
+                                                    {%for ele in i_value[0]%}
+                                                        <th>
+                                                            {{ele}}
+                                                        </th>
+                                                    {%endfor%}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {%for ele in i_value[1:]%}
+                                                    <tr>
+                                                        {%for i_ele in ele%}
+                                                            <td>
+                                                                {{i_ele}}
+                                                            </td>
+                                                        {%endfor%}
+                                                    </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="dull_div {%if i_value|length > 11 %} show_dull {%endif%}">
+                                        ++ More..
+                                    </div>
+                                </div>
+                            </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            {%endfor%}
+        </div>
+        <div class="gapclass"></div>
+    </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% block title %}
+    QUFIND - Error   
+{% endblock %}
+{% block body %}
+    <div class="container errorOuterDiv">
+        <div class="errorInnerDiv">
+            {% if msg %}
+                {{ msg }}
+            {% else %}
+                Some Error Occurred!!!
+            {% endif %}
+        </div>
+    </div>
+
+
+
+{% endblock %}

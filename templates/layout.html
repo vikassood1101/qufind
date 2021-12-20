@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="{{url_for('static',filename='images/logo.png')}}" type="image/png" sizes="16x16">
+    <link href="{{url_for('static',filename='css/main.css')}}" type="text/css" rel="stylesheet" >
+    <script src="{{url_for('static',filename='js/jquery.js')}}"></script>
+    <script src="{{url_for('static',filename='js/main.js')}}"></script>
+    <title>{% block title %}{{ settings.SETTING }}{% endblock %}</title>
+</head>
+<body>
+    <div class="body-container">
+        <div class="primary_header">
+            <div class="icon_div">
+                <span class="header_icon"></span>
+            </div>
+            <div class="header_label_div">
+                <a href="{{ request.script_root }}/">
+                    QUFIND
+                </a>
+            </div>
+            <div class="icon_div">
+                <span class="header_icon"></span>
+            </div>
+        </div>
+        <div class="secondary_header">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <a href="{{ request.script_root }}/home">Home</a>
+                        </td>
+                        <td>
+                            <a href="{{ request.script_root }}/qufindU">QUFINDU</a>
+                        </td>
+                        <td>
+                            <a href="{{ request.script_root }}/qufindV">QUFINDV</a>
+                        </td>
+                        <td>
+                            <a href="{{ request.script_root }}/qufind">QUFIND</a>
+                        </td>
+                        <td>
+                            <a href="{{ request.script_root }}/help">Help</a>
+                        </td>
+                        <td>
+                            <a href="{{ request.script_root }}/contactus">Contact Us</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% block body %}
+        
+        {% endblock %}
+        <div class="container">
+            <button onclick="scrollTopFunction();" id="scrollTopBtn" title="Go to Top">Top</button>
+        </div>
+        <div class="primary_footer">
+            <div class="moveCenter">
+                QUFIND
+            </div>
+            <div class="clearFloat"></div>
+        </div>
+    </div>
+    <input type="hidden" id="getMainURL" value="{{ request.script_root }}" />
+</body>
+</html>
