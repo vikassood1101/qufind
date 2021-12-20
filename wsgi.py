@@ -1,10 +1,10 @@
-#!/var/www/html/QUFIND/env/bin python3
+#!/var/www/html/qufind/env/bin python3
 
 import sys
 import site
 
-site.addsitedir('/var/www/html/QUFIND/env/lib/python3.9/site-packages')
+site.addsitedir('/var/www/html/qufind/env/lib/python3.6/site-packages')
 
-sys.path.insert(0, '/var/www/html/QUFIND')
+sys.path.insert(0, '/var/www/html/qufind')
 
 from app import app as application
