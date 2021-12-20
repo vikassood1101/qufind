@@ -2,5 +2,5 @@
 import sys
 sys.path.insert(0, '/var/www/html/qufinder')
 
-from qufind import app as application
+from qufinder import app as application
 application.secret_key = 'gkuerghkeht5435345hkjfgjsdgfjsfllorrowgcbry'

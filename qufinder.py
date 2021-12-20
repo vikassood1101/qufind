@@ -12,7 +12,7 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG,
     format='%(asctime)s %(levelname)s %(message)s',
-    filename= os.path.join(app.static_folder, 'logger', 'qufind.log'),
+    filename= os.path.join(app.static_folder, 'logger', 'qufinder.log'),
     filemode='a')
 
 @app.route('/')
@@ -28,7 +28,7 @@ def home():
 def help():
     return render_template('help.html')
 
-@app.route('/qufindU')
+@app.route('/qufindU/')
 def qufindU():
     return render_template('qufindu.html')
 
@@ -203,11 +203,11 @@ def submitv():
         return render_template('error.html', msg="Something is wrong with your data!!")
     return redirect(url_for('qufindv'))
 
-@app.route('/qufindV')
+@app.route('/qufindV/')
 def qufindV(): 
     return render_template('qufindv.html')
 
-@app.route('/qufind')
+@app.route('/qufind/')
 def qufind(): 
     return render_template('qufind.html')
 
