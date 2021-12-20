@@ -112,7 +112,7 @@
                                         <label>Max. loop length</label>
                                         <select name="max_loop_length">
                                             {%for ele in range(5, 31)%}
-                                                {% set default_selected = 7%}
+                                                {% set default_selected = 15%}
                                                 <option {%if ele == default_selected%}selected{%endif%} value="{{ele}}">{{ele}}</option>
                                             {%endfor%}
                                         </select>
