@@ -7,6 +7,29 @@ $(document).ready(function(){
             }
         }
     });
+
+    $('input[type=file]').change(function(){
+        let allowed_extensions = $(this).val().split('.').pop().toLowerCase();
+        switch (allowed_extensions) {
+            case 'txt':
+            case 'fa':
+            case 'fasta':
+            case 'fsa':
+            case 'fna':
+            case 'faa':
+            case 'ffn':
+            case 'frn':
+                break;
+            default:                
+                addErrorClass($(this), 'File format not allowed.!!');
+                break;
+        }
+    });
+
+    $('input[type=file]').click(function(){
+        $(this).next('.errorClass').remove();
+    });
+
     $('.qufinduPage .outer_button_div button').click(function(){
         $('.ensembl_textarea_div, .ncbi_textbox_div, .qufinduPage .outer_button_div button').toggleClass('active');
         if($(this).hasClass('active')){
@@ -48,21 +71,30 @@ $(document).ready(function(){
     });
     
     $('#qufindu_submit_button').click(function(){
-        if(validateFormQufindu()){
+        let errorMsg = validateFormQufindu();
+        if(errorMsg != ''){
+            alert(errorMsg);
+        } else {
             displayLoader($(this));
             $('#form_qufindu').submit();
         }
     });
 
     $('#qufindv_submit_button').click(function(){
-        if(validateFormQufindv()){
+        let errorMsg = validateFormQufindv();
+        if(errorMsg != ''){
+            alert(errorMsg);
+        } else {
             displayLoader($(this));
             $('#form_qufindv').submit();
         }
     });
 
     $('#qufind_submit_button').click(function(){
-        if(validateFormQufind()){
+        let errorMsg = validateFormQufind();
+        if(errorMsg != ''){
+            alert(errorMsg);
+        } else {
             displayLoader($(this));
             $('#form_qufind').submit();
         }
@@ -82,6 +114,11 @@ $(document).ready(function(){
     });
 
 });
+
+function addErrorClass(this_obj, errorMsg){
+    $(this_obj).after('<div class="errorClass">' + errorMsg + '</div>');
+    $(this_obj).val('');
+}
 
 function insertRowImage(img_link){
     let tr_html_string = '<tr class="cpg_png_result cpg_plot_img"> \
@@ -163,13 +200,63 @@ function loadExampleQufindv(file_no){
 }
 
 function validateFormQufindu(){
-    return true;
+    if ($('#database_value_input').val().trim() == ''){
+        return 'Select Database';
+    } else if ($('#ensembl_id_textarea').val().trim() == '' && $('#database_value_input').val().trim()== 'ensembl'){
+        return 'Enter Ensemble Gene id';
+    } else if ($('#ncbi_accession_id').val().trim() == '' && $('#database_value_input').val().trim()== 'ncbi'){
+        return 'Enter NCBI Accession id';
+    } else if ( $('.qufindCommon input[name="cpg_island"]').val().trim() == '' && 
+        $('.qufindCommon input[name="model_type"]').val().trim() == '' && 
+        checkSelectBoxValue($('.motif_parameters_div select')) &&
+        $('.qufindCommon input[name="strand"]').val().trim() == '' &&
+        checkSelectBoxValue($('.bulge_mismatch_div select'))) {
+        return 'Kindly select required options';
+    }
+    return '';
 }
+
+function checkSelectBoxValue(thisSelect){
+    let invalidValues =  false;
+    $(thisSelect).each(function(){
+        if($(this).val().trim() == ''){
+            invalidValues = true;
+            return false;
+        }
+    });
+    return invalidValues;
+}
+
 function validateFormQufindv(){
-    return true;
+    if ($('#fasta_seq_textarea_1').val().trim() == '' && $('#fasta_seq_textarea_2').val().trim() == '' &&
+        $('input[name="fasta_seq_file_1"]').val().trim() == '' &&  $('input[name="fasta_seq_file_2"]').val().trim() == '' ){
+        return 'Enter/Upload Single Sequence in FASTA format for comparison';
+    } else if ($('#fasta_seq_textarea_1').val().trim() == '' && $('input[name="fasta_seq_file_1"]').val().trim() == '' &&
+        ($('#fasta_seq_textarea_2').val().trim() != '' || $('input[name="fasta_seq_file_2"]').val().trim() != '' )){
+        return 'Enter/Upload 1st Single Sequence in FASTA format';
+    } else if (($('#fasta_seq_textarea_1').val().trim() != '' || $('input[name="fasta_seq_file_1"]').val().trim() != '') &&
+        $('#fasta_seq_textarea_2').val().trim() == '' && $('input[name="fasta_seq_file_2"]').val().trim() == '' ){
+        return 'Enter/Upload 2nd Single Sequence in FASTA format';
+    } else if ( $('.qufindCommon input[name="model_type"]').val().trim() == '' && 
+        checkSelectBoxValue($('.motif_parameters_div select')) &&
+        $('.qufindCommon input[name="strand"]').val().trim() == '' &&
+        checkSelectBoxValue($('.bulge_mismatch_div select'))) {
+        return 'Kindly select required options';
+    }
+    return '';
 }
+
 function validateFormQufind(){
-    return true;
+    if ($('#fasta_seq_textarea').val().trim() == '' && $('#qufind_fasta_seq_file').val().trim() == '' ){
+        return 'Enter/Upload Sequence in FASTA format.';
+    } else if ( $('.qufindCommon input[name="cpg_island"]').val().trim() == '' && 
+        $('.qufindCommon input[name="model_type"]').val().trim() == '' && 
+        checkSelectBoxValue($('.motif_parameters_div select')) &&
+        $('.qufindCommon input[name="strand"]').val().trim() == '' &&
+        checkSelectBoxValue($('.bulge_mismatch_div select'))) {
+        return 'Kindly select required options';
+    }
+    return '';
 }
 
 function myFunction() {

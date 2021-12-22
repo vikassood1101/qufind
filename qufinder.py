@@ -69,6 +69,9 @@ def submitu():
                         seq_from_api = fetchDataFromAPI_id('ncbi', ncbi_accession_id)
                         if seq_from_api:
                             valid_data_dict[ ncbi_accession_id ] = seq_from_api
+                        else:
+                            return render_template('error.html', msg = "No matching id found in NCBI. Please check.")
+                        
                 else:
                     textarea_data = request.form.get('ensembl_id_textarea', '').strip()
                     if textarea_data:
@@ -79,6 +82,8 @@ def submitu():
                                 valid_data_dict[ids] = seq_from_api
                             else:
                                 invalid_data_dict[ids] = ids
+                        if len(textareDataSet) == len(invalid_data_dict):
+                            return render_template('error.html', msg = "No matching ids found in Ensembl. Please check.")
                 if valid_data_dict:
                     cpg_island_flag = False
                     cpg_model_value = 'nonoverlapping'
@@ -310,8 +315,9 @@ def uploadfileFastaFormat(request, uploaded_file_name, folder_name, input_file_n
             if os.stat(filePath).st_size > 0:
                 try:
                     #Single Sequence Fasta
-                    fasta_file_data_obj = SeqIO.read(open(filePath), "fasta")
-                    data_dict[fasta_file_data_obj.id] = str(fasta_file_data_obj.seq)
+                    with open(filePath) as f_read:
+                        fasta_file_data_obj = SeqIO.read(f_read, "fasta")
+                        data_dict[fasta_file_data_obj.id] = str(fasta_file_data_obj.seq)
                 except:
                     errorMsgList.append('Sequence File is not in proper fasta format.')
             else:
@@ -675,9 +681,10 @@ def getExample(module_type):
                         line = line.strip()
                         data_list.append(line)
             elif 'qufindv' in module_type:
-                fasta_file_data_obj = SeqIO.read(open(example_path), "fasta")
-                data_list.append('>' + fasta_file_data_obj.id)
-                data_list.append(str(fasta_file_data_obj.seq))
+                with open(example_path) as f_read:
+                    fasta_file_data_obj = SeqIO.read(f_read, "fasta")
+                    data_list.append('>' + fasta_file_data_obj.id)
+                    data_list.append(str(fasta_file_data_obj.seq))
             else:
                 fasta_file_data_obj = SeqIO.parse(example_path, "fasta")
                 for seq_record in fasta_file_data_obj:
@@ -706,6 +713,7 @@ def fetchDataFromAPI_id(database, id):
             # if resp.ok:
             #     data_dict = resp.text
             #     print(data_dict)
+            
             Entrez.email = 'vino@anuefa.com'
             text_file_fp = Entrez.efetch(db="nuccore", id=id, rettype="fasta", retmode="text")
             #To discard Accessnion id Header returned in file
@@ -861,17 +869,17 @@ def drawCPG_Quad_Plot():
                             g4_start.append(ele2[0])
                             g4_end.append(ele2[1])
                             y = range(0, len(g4_start))
-                            plt.figure(figsize=(4,3))
+                            # plt.figure(figsize=(6,4))
                             plt.hlines(y, g4_start, g4_end, color = 'red', label = 'Quadruplexes')            
                             for x1,x2 in zip(g4_start, g4_end):
-                                plt.text(x1 + 0.5, y[count], s = (x1,x2), horizontalalignment = 'right', fontweight = 'bold', verticalalignment='bottom',fontsize=4, color = 'blue')
+                                plt.text(x2, y[count], s = (x1,x2), horizontalalignment = 'right', fontweight = 'bold', verticalalignment = 'bottom',fontsize=5, color = 'blue')
                                 count = count + 1
                             plt.xlim([start_index, end_index])
                             plt.yticks([])
                             plt.xticks([start_index, end_index])
                             plt.xlabel("Positions of Quadruplexes", fontsize = 6)
                             plt.legend(prop = {'style': 'italic'}, loc='upper left', bbox_to_anchor=(1, 0.5))
-                            plt.savefig(tmpfile, pad_inches = 0.1,dpi = 200, quality = 95,bbox_inches = "tight")
+                            plt.savefig(tmpfile, pad_inches = 0.1,dpi = 200, bbox_inches = "tight")
                             plt.close()
                             tmpfile.seek(0)
                     encoded_image = base64.b64encode(tmpfile.read()).decode('utf-8')
@@ -888,4 +896,4 @@ def drawCPG_Quad_Plot():
 
                 
 if __name__ == "__main__":    
-    app.run()
+    app.run(debug=True)
